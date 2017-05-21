@@ -1,3 +1,9 @@
+## Caching the Inverse of a Matrix:
+## Matrix inversion is usually a costly computation and there may be some 
+## benefit to caching the inverse of a matrix rather than compute it repeatedly.
+## Below are a pair of functions that are used to create a special object that 
+## stores a matrix and caches its inverse.
+
 ## two functions makeCacheMatrix and cachedSolve used to create a matrix object makeCacheMatrix
 ## makeCacheMatrix is S3 object with getter and setter functions for matrix and mmatrix inverse
 ## call to cacheSolve will check is the matrix object has been used to solve for matrix inverse
@@ -38,8 +44,27 @@ cacheSolve <- function(x, ...) {
                 message("getting cached data")
                 return(m)
         }
+        
+        # Data was not found in the cache above...solve it
+        
         data <- x$get()
-        m <- solve(data, ...)
-        x$setminv(m)
-        m
+        
+        # Check if matrix can be inversed. Singular matrixes 
+        # cannot be inversed. No point in proceeding otherwise. 
+        
+        f <- function(j) class(try(solve(j),silent=T))=="matrix"
+        
+        if(f(data)) {      
+        
+                m <- solve(data, ...)
+                x$setminv(m)
+                m
+        }
+        else
+        {
+                # Provide a meaningful error and bail out
+                message("Matrix is singular and cannot be inversed")
+                stop("Retry with different data")
+        }
 }
+
