@@ -50,7 +50,7 @@ cacheSolve <- function(x, ...) {
         data <- x$get()
         
         # Check if matrix can be inversed. Singular matrixes 
-        # cannot be inversed. No point in proceeding otherwise. 
+        # cannot be inversed. No point in p roceeding otherwise. 
         
         f <- function(j) class(try(solve(j),silent=T))=="matrix"
         
